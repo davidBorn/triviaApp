@@ -8,6 +8,7 @@ export default function triviaQuestionSelector() {
     const [score, setScore] = useState(0);
     let [answerSubmitted, setAnswerSubmitted] = useState(false);
     let [disabledButton, setDisabledButton] = useState('');
+    let [countdown, setCountdown] = useState(10);
     const [allAnswers, setAllAnswers] = useState<String[]>([]);
 
 
@@ -50,6 +51,14 @@ export default function triviaQuestionSelector() {
 
         
     }
+
+    // Function starts the timer
+    const startTimer = () => {
+        let timer = setInterval(() => {
+            setCountdown(countdown - 1)
+        }, 1000)
+        return timer;
+    }
     
 
     // Function selects the answer
@@ -91,6 +100,7 @@ export default function triviaQuestionSelector() {
             setAnswerSubmitted(false);
             setDisabledButton('');
             shuffleAnswers(questions);
+            startTimer();
         }
         else if (document.querySelector('.incorrect-animation').classList.contains('active')) {
             document.querySelectorAll('.answer-button button').forEach((button) => {
@@ -101,6 +111,7 @@ export default function triviaQuestionSelector() {
             setAnswerSubmitted(false);
             setDisabledButton('');
             shuffleAnswers(questions);
+            startTimer();
         }
       
       
@@ -119,6 +130,7 @@ export default function triviaQuestionSelector() {
                
                 {/* Displays Question with question number */}
                 <div className="flex flex-col items-center justify-center">
+                    <div className="flex flex-row items-center justify-center timer">{countdown}</div>
                     <h1 className="my-[20px] text-center">Question {questionNumber}</h1>
                     <p className="text-center mb-[10px]">{questions[questionNumber - 1].question}</p>
                     <ul className="flex flex-row items-center flex-wrap gap-[15px] mt-[24px]">
