@@ -16,12 +16,124 @@
   }
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+.loader {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 6rem;
+  margin-top: 3rem;
+  margin-bottom: 3rem;
 }
+.loader:before,
+.loader:after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  animation: pulsOut 1.8s ease-in-out infinite;
+  filter: drop-shadow(0 0 1rem rgba(255, 255, 255, 0.75));
+}
+.loader:before {
+  width: 100%;
+  padding-bottom: 100%;
+  box-shadow: inset 0 0 0 1rem #fff;
+  animation-name: pulsIn;
+}
+.loader:after {
+  width: calc(100% - 2rem);
+  padding-bottom: calc(100% - 2rem);
+  box-shadow: 0 0 0 0 #fff;
+}
+
+@keyframes pulsIn {
+  0% {
+    box-shadow: inset 0 0 0 1rem #ccc;
+    opacity: 1;
+  }
+  50%, 100% {
+    box-shadow: inset 0 0 0 0 #ccc;
+    opacity: 0;
+  }
+}
+
+@keyframes pulsOut {
+  0%, 50% {
+    box-shadow: 0 0 0 0 #ccc;
+    opacity: 0;
+  }
+  100% {
+    box-shadow: 0 0 0 1rem #ccc;
+    opacity: 1;
+  }
+}
+.answer-button {
+  width: calc(50% - 15px);
+}
+.answer-button button.active {
+  background-color: rgb(34, 197, 34);
+  color: #fff;
+  font-weight: 900;
+  padding: 10px 15px;
+  border-radius: 5px; 
+}
+.answer-button button.active:hover {
+  background-color: rgb(21, 128, 61);
+}
+.correct-animation {
+  animation: correct 1s ease-in-out;
+}
+.correct-animation.active {
+  display: block;
+  visibility: visible;
+  opacity: 1;
+  color:  rgb(34, 197, 34);
+  font-weight: 900;
+}
+@keyframes correct {
+  0% {
+    visibility: visible;
+    transform: scale(1);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(2);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    visibility: visible;
+  }
+}
+
+.incorrect-animation {
+  animation: incorrect 1s ease-in-out;
+}
+.incorrect-animation.active {
+  display: block;
+  visibility: visible;
+  opacity: 1;
+  color:  rgb(239, 68, 68);
+  font-weight: 900;
+}
+
+@keyframes incorrect {
+  0% {
+    visibility: visible;
+    transform: scale(1);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(2);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    visibility: visible;
+  }
+}
+.disabled {
+  opacity: 0.3;
+}
+      
+
