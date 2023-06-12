@@ -23,22 +23,9 @@ export default function triviaQuestionSelector() {
         answers = answers.sort(() => Math.random() - 0.5);
         // set the answers
         setAllAnswers(answers);
-    };
-
-    // Function starts the timer
-    const startTimer = () => {
-        let countdownTime = countdown;
-        let timer = setInterval(() => {
-            if (countdownTime !== 0) {
-                countdownTime--;
-                document.querySelector(".timer").innerHTML =
-                    countdownTime.toString();
-                console.log(countdownTime);
-            } else {
-                clearInterval(timer);
-                checkQuestion();
-            }
-        }, 1000);
+        console.log(answers);
+        console.log(allAnswers);
+        console.log(questionNumber);
     };
 
     const handleSubmit = (e) => {
@@ -54,10 +41,17 @@ export default function triviaQuestionSelector() {
                 setQuestions(data.results);
                 setQuestionNumber(1);
                 shuffleAnswers(data.results);
-                // startTimer();
             })
             .catch((err) => console.log(err))
             .finally(() => setLoading(false));
+    };
+
+    // Function starts the timer
+    const startTimer = () => {
+        let timer = setInterval(() => {
+            setCountdown(countdown - 1);
+        }, 1000);
+        return timer;
     };
 
     // Function selects the answer
