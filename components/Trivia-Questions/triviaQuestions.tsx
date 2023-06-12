@@ -28,6 +28,14 @@ export default function triviaQuestionSelector() {
      
     }
 
+     // Function starts the timer
+     const startTimer = () => {
+        let timer = setInterval(() => {
+            setCountdown(countdown - 1)
+        }, 1000)
+        return timer;
+    }
+
     const handleSubmit = (e) => {
         
     
@@ -43,6 +51,7 @@ export default function triviaQuestionSelector() {
             setQuestions(data.results)
             setQuestionNumber(1)
             shuffleAnswers(data.results)
+            startTimer();
            
             
         })
@@ -50,14 +59,6 @@ export default function triviaQuestionSelector() {
         .finally(() => setLoading(false))
 
         
-    }
-
-    // Function starts the timer
-    const startTimer = () => {
-        let timer = setInterval(() => {
-            setCountdown(countdown - 1)
-        }, 1000)
-        return timer;
     }
     
 
