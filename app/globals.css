@@ -96,7 +96,6 @@
     display: block;
     visibility: visible;
     opacity: 1;
-    color: rgb(34, 197, 34);
     font-weight: 900;
 }
 @keyframes correct {
@@ -122,7 +121,6 @@
     display: block;
     visibility: visible;
     opacity: 1;
-    color: rgb(239, 68, 68);
     font-weight: 900;
 }
 
@@ -146,3 +144,21 @@
 }
 
 /* Timer */
+.timer {
+    max-height: 200px;
+}
+.timer.done {
+    max-height: 0;
+    transition: all 0.5s ease-out;
+    margin: 0;
+    opacity: 0;
+    overflow: hidden;
+}
+.no-time-message.done {
+    transform: scale(1);
+    opacity: 1;
+    margin-top: 20px;
+    margin-bottom: 40px;
+    max-height: 100px;
+    transition: all 1s ease-out;
+}

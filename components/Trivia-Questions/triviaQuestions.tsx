@@ -1,6 +1,7 @@
 import { count } from "console";
 import React, { useState, useEffect } from "react";
 import { start } from "repl";
+import { motion } from "framer-motion";
 
 export default function triviaQuestionSelector() {
     const [loading, setLoading] = useState(false);
@@ -10,9 +11,10 @@ export default function triviaQuestionSelector() {
     let [answerSubmitted, setAnswerSubmitted] = useState(false);
     let [scoreBoard, setScoreBoard] = useState(false);
     let [disabledButton, setDisabledButton] = useState("");
-    let [countdown, setCountdown] = useState(15);
+    let [countdown, setCountdown] = useState(30);
     let [answerSelected, setAnswerSelected] = useState(true);
     const [allAnswers, setAllAnswers] = useState<String[]>([]);
+    const [doneState, setDoneState] = useState("not-done");
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -100,6 +102,7 @@ export default function triviaQuestionSelector() {
             setAnswerSelected(true);
             setAnswerSubmitted(true);
             setDisabledButton("disabled");
+            setDoneState("done");
         } else if (
             answer.innerHTML !== questions[questionNumber - 1].correct_answer
         ) {
@@ -110,6 +113,7 @@ export default function triviaQuestionSelector() {
             setScore(score + 0);
             setAnswerSubmitted(true);
             setDisabledButton("disabled");
+            setDoneState("done");
         }
     };
 
@@ -124,10 +128,18 @@ export default function triviaQuestionSelector() {
                     .querySelector(".check_answer_button")
                     .addEventListener("click", () => {
                         clearInterval(timer);
+                        document
+                            .querySelector(".timer")
+                            .classList.add("opacity-100");
+                        // clear style attribute from timer
+                        document
+                            .querySelector(".timer")
+                            .removeAttribute("style");
                         return countdown;
                     });
                 if (countdown === 0) {
                     clearInterval(timer);
+                    setDoneState("done");
                     return 0;
                 } else {
                     return countdown - 1;
@@ -164,6 +176,7 @@ export default function triviaQuestionSelector() {
             }
             setAnswerSubmitted(false);
             setDisabledButton("");
+            setDoneState("not-done");
         } else if (
             document
                 .querySelector(".incorrect-animation")
@@ -189,6 +202,7 @@ export default function triviaQuestionSelector() {
             }
             setAnswerSubmitted(false);
             setDisabledButton("");
+            setDoneState("not-done");
         }
     };
 
@@ -200,12 +214,33 @@ export default function triviaQuestionSelector() {
             <div>
                 {/* Displays Question with question number */}
                 <div className="flex flex-col items-center justify-center">
-                    <div className="flex flex-row items-center justify-center timer">
-                        {countdown}
-                    </div>
                     <h1 className="my-[20px] text-center">
                         Question {questionNumber}
                     </h1>
+                    <motion.div
+                        className={`flex flex-row items-center justify-center timer mb-[40px] mt-[20px] w-full align-right opacity-50 text-blue-600 font-bold ${doneState}`}
+                        key={countdown}
+                        animate={{
+                            scale: [1, 1.3, 1],
+                            translateY: [-20, 0, 20],
+                            opacity: [0, 1, 0],
+                        }}
+                        transition={{
+                            duration: 1,
+                            ease: "easeInOut",
+                            repeatDelay: 1,
+                        }}
+                    >
+                        {countdown}
+                    </motion.div>
+                    {/* if countdown is 0, display "no points for time bonus" */}
+                    {countdown === 0 ? (
+                        <p
+                            className={`text-center max-h-0 scale-0 no-time-message text-red-600 ${doneState}`}
+                        >
+                            No points for time bonus
+                        </p>
+                    ) : null}
                     <p className="text-center mb-[10px]">
                         {questions[questionNumber - 1].question}
                     </p>
@@ -239,22 +274,56 @@ export default function triviaQuestionSelector() {
                             Submit
                         </button>
                     </div>
+
                     <div
-                        className={`correct-animation text-lg relative z-10 transition duration-400 ease-in-out text-green-500/0 invisible px-[40px] py-[60px] mt-[30px] bg-slate-200/50 hidden`}
+                        className={`correct-animation text-lg relative z-10 transition duration-400 ease-in-out invisible px-[40px] py-[20px] mt-[30px] bg-slate-200/50 hidden`}
                     >
-                        <p>Correct!</p>
-                        <p>Your Score: {score}</p>
-                        <button className="" onClick={loadNextQuestion}>
+                        <p className="text-center w-full text-green-500 mb-[4px]">
+                            Correct!
+                        </p>
+                        <p className="text-center mb-[4px]">
+                            Time Left:{" "}
+                            <span className="text-green-500">{countdown}s</span>
+                        </p>
+                        <p className="text-center mb-[4px]">
+                            Time Bonus:{" "}
+                            <span className="text-green-500">
+                                +{countdown * 10}
+                            </span>
+                        </p>
+                        <p className="text-center mb-[4px]">
+                            Correct Answer:{" "}
+                            <span className="text-green-500">+100</span>
+                        </p>
+                        <p className="text-center mb-[4px]">
+                            Your Score:{" "}
+                            <span className="text-green-500">{score}</span>
+                        </p>
+                        <button
+                            className="rounded py-2 px-4 bg-sky-600 text-white w-full align-center mt-[10px] hover:bg-sky-700"
+                            onClick={loadNextQuestion}
+                        >
                             Next Question
                         </button>
                     </div>
-                    <div className="incorrect-animation text-lg relative z-10 text-red-500/0 transition duration-400 ease-in-out invisible px-[40px] py-[60px] mt-[30px] bg-slate-200/50 hidden">
-                        <p>
-                            Incorrect!<br></br>The correct answer is:{" "}
-                            {questions[questionNumber - 1].correct_answer}
+                    <div className="incorrect-animation text-lg relative z-10 transition duration-400 ease-in-out invisible px-[40px] py-[20px] mt-[30px] bg-slate-200/50 hidden">
+                        <p className="text-red-500 w-full text-center mb-[5px]">
+                            Incorrect!
                         </p>
-                        <p>Your Score: {score}</p>
-                        <button className="" onClick={loadNextQuestion}>
+                        <p className-="text-black w-full text-center">
+                            The correct answer is:{" "}
+                            <span className="text-sky-600">
+                                {questions[questionNumber - 1].correct_answer}
+                            </span>
+                        </p>
+                        <p className="text-center w-full my-[5px]">
+                            Your Score:{" "}
+                            <span className="text-green-500">{score}</span>
+                        </p>
+                        <button
+                            className="rounded py-2 px-4 bg-sky-600 text-white w-full align-center mt-[10px] hover:bg-sky-700"
+                            onClick={loadNextQuestion}
+                        >
                             Next Question
                         </button>
                     </div>
@@ -295,7 +364,7 @@ export default function triviaQuestionSelector() {
                         Please select the how many questions you want to answer
                     </p>
                     <div className="flex flex-col items-center justify-center">
-                        <select className="w-24 h-10 mb-[10px]">
+                        <select className="w-24 h-10 mb-[10px] py-2 px-2 rounded">
                             <option value="5">5</option>
                             <option value="10">10</option>
                             <option value="15">15</option>
